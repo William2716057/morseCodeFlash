@@ -1,64 +1,88 @@
-function convertToMorse() {
-    const morseCodeMap = {
-        'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
-        'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
-        'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-        'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
-        '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/',
-    };
+const morseFlasher = document.getElementById('morse-flasher');
 
-    const textInput = document.getElementById('inputText').value.toUpperCase();
-    let morseCode = '';
+// Morse code mapping
+const morseCode = {
+    'A': '.-',
+    'B': '-...',
+    'C': '-.-.',
+    'D': '-..',
+    'E': '.',
+    'F': '..-.',
+    'G': '--.',
+    'H': '....',
+    'I': '..',
+    'J': '.---',
+    'K': '-.-',
+    'L': '.-..',
+    'M': '--',
+    'N': '-.',
+    'O': '---',
+    'P': '.--.',
+    'Q': '--.-',
+    'R': '.-.',
+    'S': '...',
+    'T': '-',
+    'U': '..-',
+    'V': '...-',
+    'W': '.--',
+    'X': '-..-',
+    'Y': '-.--',
+    'Z': '--..',
+    '0': '-----',
+    '1': '.----',
+    '2': '..---',
+    '3': '...--',
+    '4': '....-',
+    '5': '.....',
+    '6': '-....',
+    '7': '--...',
+    '8': '---..',
+    '9': '----.',
+    '.': '.-.-.-',
+    ',': '--..--',
+    '?': '..--..',
+    '\'': '.----.',
+    '!': '-.-.--',
+    '/': '-..-.',
+    '(': '-.--.',
+    ')': '-.--.-',
+    '&': '.-...',
+    ':': '---...',
+    ';': '-.-.-.',
+    '=': '-...-',
+    '+': '.-.-.',
+    '-': '-....-',
+    '_': '..--.-',
+    '"': '.-..-.',
+    '$': '...-..-',
+    '@': '.--.-.',
+    ' ': '/'
+};
 
-    for (let char of textInput) {
-        if (morseCodeMap.hasOwnProperty(char)) {
-            morseCode += morseCodeMap[char] + ' ';
-        } else {
-            // If character not found in morse code map, just append it as is
-            morseCode += char;
-        }
-    }
-
-    flashMorseCode(morseCode.trim());
-}
-
-function flashMorseCode(morseCode) {
-    const morseSequence = morseCode.split(' ');
-
+function flashMorseCode(message) {
     let index = 0;
-
-    const flashInterval = setInterval(() => {
-        if (index < morseSequence.length) {
-            flashLight(morseSequence[index]);
+    let flashingInterval = setInterval(() => {
+        if (index < message.length * 2) {
+            let characterIndex = Math.floor(index / 2);
+            if (index % 2 === 0) {
+                let character = message[characterIndex].toUpperCase();
+                let morseSymbol = morseCode[character];
+                if (morseSymbol) {
+                    morseFlasher.textContent = morseSymbol;
+                } else {
+                    morseFlasher.textContent = ' ';
+                }
+                document.body.style.backgroundColor = 'yellow';
+            } else {
+                morseFlasher.textContent = '';
+                document.body.style.backgroundColor = 'black';
+            }
             index++;
         } else {
-            clearInterval(flashInterval);
+            clearInterval(flashingInterval);
         }
-    }, 1000);
+    }, 500);
 }
 
-function flashLight(morseChar) {
-    const flashDuration = 50; // milliseconds
-    const lightOnColor = '#FFFF00'; // Yellow
-    const lightOffColor = '#000000'; // Black
-
-    const light = document.body;
-
-    switch (morseChar) {
-        case '.':
-            light.style.backgroundColor = lightOnColor;
-            setTimeout(() => { light.style.backgroundColor = lightOffColor; }, flashDuration);
-            break;
-        case '-':
-            light.style.backgroundColor = lightOnColor;
-            setTimeout(() => { light.style.backgroundColor = lightOffColor; }, flashDuration * 3);
-            break;
-        case '/':
-            setTimeout(() => { light.style.backgroundColor = lightOffColor; }, flashDuration * 2);
-            break;
-        default:
-            // For any character not included in Morse code, just turn off light
-            light.style.backgroundColor = lightOffColor;
-            break;
-    }
-}
+// Flash the Morse code message
+flashMorseCode("a"); // Example message to flash
